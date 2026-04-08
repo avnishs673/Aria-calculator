@@ -1,71 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Land Area Calculator</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 40px; background: #f0f2f5; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 380px; }
-        h2 { text-align: center; color: #333; }
-        label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.9em; }
-        select, input { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; background: #28a745; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 1em; }
-        .results-box { margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 8px; border-left: 5px solid #28a745; }
-        .res-item { display: flex; justify-content: space-between; margin: 5px 0; font-size: 1.1em; }
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
-
-<div class="card">
-    <h2>Land Calculator</h2>
-    
-    <label>Select Plot Shape:</label>
-    <select id="shape" onchange="toggleInputs()">
-        <option value="irregular">Irregular Plot (4 Sides)</option>
-        <option value="triangle">Triangle Plot (3 Sides)</option>
-    </select>
-
-    <!-- Irregular Plot Inputs -->
-    <div id="irregular-inputs">
-        <label>East Side:</label>
-        <input type="number" id="east" placeholder="Feet">
-        <label>West Side:</label>
-        <input type="number" id="west" placeholder="Feet">
-        <label>North Side:</label>
-        <input type="number" id="north" placeholder="Feet">
-        <label>South Side:</label>
-        <input type="number" id="south" placeholder="Feet">
-    </div>
-
-    <!-- Triangle Plot Inputs -->
-    <div id="triangle-inputs" class="hidden">
-        <label>Lamb (Perpendicular):</label>
-        <input type="number" id="lamb" placeholder="Feet">
-        <label>Aadhar (Base):</label>
-        <input type="number" id="aadhar" placeholder="Feet">
-        <label>Vikaran (Hypotenuse):</label>
-        <input type="number" id="vikaran" placeholder="Feet">
-    </div>
-
-    <button onclick="calculateLand()">Calculate Area</button>
-
-    <div id="displayArea" class="results-box" style="display:none;">
-        <div class="res-item"><strong>Total Area:</strong> <span id="total">0</span></div>
-        <hr>
-        <div class="res-item"><span>Beegha:</span> <b id="beegha">0</b></div>
-        <div class="res-item"><span>Biswa (Bise):</span> <b id="biswa">0</b></div>
-        <div class="res-item"><span>Biswansi:</span> <b id="biswansi">0</b></div>
-    </div>
-</div>
-
-<script>
-    function toggleInputs() {
-        const shape = document.getElementById('shape').value;
-        document.getElementById('irregular-inputs').classList.toggle('hidden', shape !== 'irregular');
-        document.getElementById('triangle-inputs').classList.toggle('hidden', shape !== 'triangle');
-        document.getElementById('displayArea').style.display = 'none';
-    }
-
     function calculateLand() {
         const shape = document.getElementById('shape').value;
         let area = 0;
@@ -84,24 +16,33 @@
             const v = parseFloat(document.getElementById('vikaran').value) || 0;
             
             if (l && a && v) {
-                // Find 2 smallest sides
                 const sides = [l, a, v].sort((x, y) => x - y);
-                // Formula: (multiplication of 2 small sides / 2) * 3
                 area = ((sides[0] * sides[1]) / 2) * 3;
             }
         }
 
         if (area > 0) {
+            // Logic for the Breakdown (Example: 532)
+            let remaining = area;
+
+            // 1. Calculate Full Bighas
+            const beegha = Math.floor(remaining / 400); 
+            remaining = remaining % 400; // Leftover is 132
+
+            // 2. Calculate Full Biswa from leftover
+            const biswa = Math.floor(remaining / 20); 
+            remaining = remaining % 20; // Leftover is 12
+
+            // 3. Final leftover is Biswansi
+            const biswansi = remaining;
+
             document.getElementById('total').innerText = area.toFixed(2);
-            document.getElementById('biswansi').innerText = area.toFixed(2);
-            document.getElementById('biswa').innerText = (area / 20).toFixed(2);
-            document.getElementById('beegha').innerText = (area / 400).toFixed(2);
+            document.getElementById('beegha').innerText = beegha;
+            document.getElementById('biswa').innerText = biswa;
+            document.getElementById('biswansi').innerText = biswansi.toFixed(2);
+            
             document.getElementById('displayArea').style.display = 'block';
         } else {
-            alert("Please enter valid numbers for all sides!");
+            alert("Please enter valid numbers!");
         }
     }
-</script>
-
-</body>
-</html>
