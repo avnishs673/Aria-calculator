@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All-in-One Area Calculator</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; padding-top: 50px; background-color: #f4f7f6; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; background: #28a745; color: white; border: none; padding: 12px; cursor: pointer; border-radius: 6px; font-weight: bold; }
+        #result { margin-top: 20px; color: #333; font-size: 1.2rem; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Area Calculator</h2>
+    
+    <label>Choose Shape:</label>
+    <select id="shape" onchange="toggleInputs()">
+        <option value="rectangle">Rectangle</option>
+        <option value="triangle">Triangle</option>
+        <option value="circle">Circle</option>
+    </select>
+
+    <!-- Rectangle & Triangle Inputs -->
+    <div id="dims">
+        <input type="number" id="val1" placeholder="Length / Base">
+        <input type="number" id="val2" placeholder="Width / Height">
+    </div>
+
+    <!-- Circle Input -->
+    <div id="circle-dim" class="hidden">
+        <input type="number" id="radius" placeholder="Enter Radius">
+    </div>
+
+    <button onclick="calculate()">Calculate Area</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    function toggleInputs() {
+        const shape = document.getElementById('shape').value;
+        document.getElementById('dims').className = (shape === 'circle') ? 'hidden' : '';
+        document.getElementById('circle-dim').className = (shape === 'circle') ? '' : 'hidden';
+    }
+
+    function calculate() {
+        const shape = document.getElementById('shape').value;
+        let area = 0;
+
+        if (shape === 'rectangle') {
+            area = document.getElementById('val1').value * document.getElementById('val2').value;
+        } else if (shape === 'triangle') {
+            area = 0.5 * document.getElementById('val1').value * document.getElementById('val2').value;
+        } else {
+            const r = document.getElementById('radius').value;
+            area = Math.PI * Math.pow(r, 2);
+        }
+
+        document.getElementById('result').innerText = area > 0 ? "Result: " + area.toFixed(2) : "Enter valid numbers!";
+    }
+</script>
+
+</body>
+</html>
